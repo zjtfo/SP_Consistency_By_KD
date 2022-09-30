@@ -27,8 +27,6 @@ rootLogger = logging.getLogger()
 import warnings
 warnings.simplefilter("ignore") # hide warnings that caused by invalid sparql query
 
-# device = torch.device(3)
-
 # 分类器
 class bert_lstm(nn.Module):
     def __init__(self, bertpath, hidden_dim, output_size, n_layers, bidirectional=True, drop_prob=0.5):
@@ -381,45 +379,10 @@ def train(args):
             outputs = model(**inputs)
             loss_ce = outputs[0]
 
-            # for k, v in outputs.items():
-            #     print(k) 
-            # 当上面的inputs = {}中不加入"output_hidden_states": True,时就只有下面四个k，加上就有下面六个key
-            # loss
-            # logits
-            # past_key_values
-            # encoder_last_hidden_state
-
-            # loss
-            # logits
-            # past_key_values
-            # decoder_hidden_states
-            # encoder_last_hidden_state
-            # encoder_hidden_states
-
-            student_reps = outputs["encoder_hidden_states"]
-
-            # KD
-            with torch.no_grad():
-                # t_decoder_hidden_states_last = teacher_model(**inputs)["decoder_hidden_states"][-1]
-                # print(new_t_logits.shape)  # torch.Size([16, 188, 50265])
-                t_logits = teacher_model(**inputs)[1]
-                # print(teacher_model(**inputs)[1].shape)  # torch.Size([16, 188, 50265])
-                teacher_reps = teacher_model(**inputs)["encoder_hidden_states"]
             
             
-            # 试了一次只用encoder的0、2、4三层，效果不好，正好讨论提到过共享一个encoder，那就换成encoder的6层都用
-            new_teacher_reps = teacher_reps
-            new_student_reps = student_reps
-
-            rep_loss = 0.0
-            for student_rep, teacher_rep in zip(new_student_reps, new_teacher_reps):
-                    tmp_loss = F.mse_loss(F.normalize(student_rep, p=2, dim=1), F.normalize(teacher_rep, p=2, dim=1))
-                    rep_loss += tmp_loss
-            # print(rep_loss)
-            
-            
-            # loss = (1 - kd_weight) * loss_ce.mean() + kd_weight * transfer_loss_ce.mean()
-            loss = (1 - kd_weight) * loss_ce.mean() + kd_weight * transfer_loss_ce.mean() + kd_weight * rep_loss
+            loss = (1 - kd_weight) * loss_ce.mean() + kd_weight * transfer_loss_ce.mean()
+            # loss = (1 - kd_weight) * loss_ce.mean() + kd_weight * transfer_loss_ce.mean() + kd_weight * rep_loss
             
             # loss = args.ce_weight * loss_ce.mean() + args.kd_weight * transfer_loss_ce.mean()
             # loss = args.ce_weight * loss_ce.mean() + args.kd_weight * transfer_loss_ce.mean() + args.kd_rep_weight * rep_loss
@@ -457,24 +420,6 @@ def train(args):
                     
                     acc = cur_acc
 
-            #     logging.info("===================Test==================")
-            #     evaluate(args, model, test_loader, device)
-            # 下面注释是原始写法，会保存很多checkpoint，上面自己进行了修改
-            # if args.save_steps > 0 and global_step % args.save_steps == 0:
-            #         # Save model checkpoint
-            #         output_dir = os.path.join(args.output_dir, "checkpoint-{}".format(global_step + prefix))
-            #         if not os.path.exists(output_dir):
-            #             os.makedirs(output_dir)
-            #         model_to_save = (
-            #             model.module if hasattr(model, "module") else model
-            #         )  # Take care of distributed/parallel training
-            #         model_to_save.save_pretrained(output_dir)
-            #         torch.save(args, os.path.join(output_dir, "training_args.bin"))
-            #         logging.info("Saving model checkpoint to %s", output_dir)
-            #         tokenizer.save_vocabulary(output_dir)
-            #         torch.save(optimizer.state_dict(), os.path.join(output_dir, "optimizer.pt"))
-            #         torch.save(scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
-            #         logging.info("Saving optimizer and scheduler states to %s", output_dir)
         # break
         logging.info("\n")
         # if 'cuda' in str(device):
@@ -486,11 +431,11 @@ def main():
     parser = argparse.ArgumentParser()
     # input and output
     parser.add_argument('--input_dir', default='./Bart_Program/preprocessed_data')
-    parser.add_argument('--output_dir', default='./transfer_based_golden_label/output_hybrid_dynamic_again/checkpoint')
+    parser.add_argument('--output_dir', default='./dynamic_bart_kopl/output/checkpoint')
 
-    parser.add_argument('--save_dir', default='./transfer_based_golden_label/log_hybrid_dynamic_again', help='path to save checkpoints and logs')
+    parser.add_argument('--save_dir', default='./dynamic_bart_kopl/log', help='path to save checkpoints and logs')
     parser.add_argument('--model_name_or_path', default='./bart-base')
-    # parser.add_argument('--model_name_or_path', default='./KQAPro_ckpt/program_ckpt')
+    
     parser.add_argument('--ckpt')
 
     # training parameters
@@ -527,14 +472,7 @@ def main():
     parser.add_argument('--dim_hidden', default=1024, type=int)
     parser.add_argument('--alpha', default = 1e-4, type = float)
 
-    # 下面3行是为了指定gpu加上去的,还有一处就是30行的代码
-    # 另外一种修改的方式就是CUDA_VISIBLE_DEVICES=1,4 python train.py
-    # parser.add_argument('--use_cuda', type=bool, default=True)  
-    # parser.add_argument('--gpu', type=int, default=3)
-    # 注意一下，有os.environ["CUDA_VISIBLE_DEVICES"]="6, 7"的时候，表明系统只能看到这两张卡，此时parser.add_argument('--gpu', type=int, default=0)中的数值是相对CUDA_VISIBLE_DEVICES的数值而言的，这里0表示只用到gpu 6
-    #           如果没有os.environ["CUDA_VISIBLE_DEVICES"]="6, 7"，那parser.add_argument('--gpu', type=int, default=0)中的数值是针对系统而言的gpu
-    # os.environ["CUDA_VISIBLE_DEVICES"]="3, 2"
-    # os.environ["CUDA_VISIBLE_DEVICES"]="5"
+    
 
     args = parser.parse_args()
 
