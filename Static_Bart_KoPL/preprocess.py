@@ -80,7 +80,7 @@ def encode_dataset(dataset, vocab, tokenizer, test = False):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_dir', default='./dataset')
-    parser.add_argument('--output_dir', default='./Bart_Program/preprocessed_data')
+    parser.add_argument('--output_dir', default='./static_bart_kopl/preprocessed_data')
     parser.add_argument('--model_name_or_path', default='./bart-base')
     args = parser.parse_args()
 
