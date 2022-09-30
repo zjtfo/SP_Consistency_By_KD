@@ -243,7 +243,7 @@ def train(args):
 def main():
     parser = argparse.ArgumentParser()
     # input and output
-    parser.add_argument('--input_dir', default='./Bart_Program/preprocessed_data')
+    parser.add_argument('--input_dir', default='./preprocessed_data/preprocessed_data')
     parser.add_argument('--output_dir', default='./static_bart_kopl/output/checkpoint')
 
     parser.add_argument('--save_dir', default='./static_bart_kopl/log', help='path to save checkpoints and logs')
