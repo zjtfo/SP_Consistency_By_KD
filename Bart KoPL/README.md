@@ -1,3 +1,6 @@
+## Attention
+The train.py file contains three guidance methods for both Static and Dynamic contexts.
+
 ## Requirements
 - python3
 - pytorch==1.12.0
