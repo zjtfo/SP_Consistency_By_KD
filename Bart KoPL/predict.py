@@ -56,6 +56,7 @@ def vis(args, kb, model, data, device, tokenizer):
             outputs = [post_process(output) for output in outputs]
             print(outputs[0])
 
+# 单机单卡
 # def predict(args, model, data, device, tokenizer, executor):
 #     model.eval()
 #     count, correct = 0, 0
@@ -100,6 +101,7 @@ def vis(args, kb, model, data, device, tokenizer):
 #                     ans = 'None'
 #                 f.write(ans + '\n')
 
+# 单机多卡
 def predict(args, model, data, tokenizer, executor):
     model.eval()
     count, correct = 0, 0
@@ -144,7 +146,7 @@ def predict(args, model, data, tokenizer, executor):
                     ans = 'None'
                 f.write(ans + '\n')
 
-
+# 单机单卡
 # def validate(model, data, device, tokenizer, executor):
 #     model.eval()
 #     count, correct = 0, 0
@@ -194,6 +196,7 @@ def predict(args, model, data, tokenizer, executor):
 
 #         return acc
 
+# 单机多卡
 def validate(model, data, tokenizer, executor):
     model.eval()
     count, correct = 0, 0
