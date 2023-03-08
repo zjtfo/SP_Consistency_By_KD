@@ -1,8 +1,11 @@
-## Attention
+## Attention❕
 The train.py file contains three guidance methods for both Static and Dynamic contexts.
 
 Please get the [sparql_ckpt](https://pan.baidu.com/s/1aoxuB0u8lBt_SThfV6J6cw) from here.
 提取码: jh8g
+
+Please click [here](https://pan.baidu.com/s/1WnnSs8QhB9gg-hxmiom4tA) to obtain the checkpoints for the six scenarios in the train.py file.
+提取码: umj5
 
 ## Requirements
 - python3
