@@ -1,3 +1,4 @@
+# Dynamic
 import os
 import torch
 import torch.optim as optim
@@ -341,13 +342,9 @@ def train(args):
                     tmp_loss = F.mse_loss(F.normalize(student_rep, p=2, dim=1), F.normalize(teacher_rep, p=2, dim=1))
                     rep_loss += tmp_loss
             
-            s_probs = F.log_softmax(outputs[0] / args.T, dim=-1)
-            t_probs = F.softmax(t_logits / args.T, dim=-1)
-            loss_kd = F.kl_div(s_probs, t_probs, reduction='batchmean') * args.T * args.T
-            # loss = args.ce_weight * loss_ce.mean() + args.kd_weight * loss_kd
-            # loss = (1 - kd_weight) * loss_ce.mean() + kd_weight * loss_kd
+           
             loss = (1 - kd_weight) * loss_ce.mean() + kd_weight * rep_loss
-            # loss = (1 - kd_weight) * loss_ce.mean() + kd_weight * loss_kd + kd_weight * rep_loss
+            
             
 
             loss.backward()
