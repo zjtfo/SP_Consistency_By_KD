@@ -1,3 +1,7 @@
+## Attention❕
+Please click [here]() to obtain the checkpoints for the two scenarios in the train.py file.
+提取码: 
+
 ## Requirements
 - python3.7
 - rdflib=4.2.2 or 6.1.1
