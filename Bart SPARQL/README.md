@@ -1,6 +1,6 @@
 ## Attention❕
-Please click [here]() to obtain the checkpoints for the two scenarios in the train.py file.
-提取码: 
+Please click [here](https://pan.baidu.com/s/1otYAb08ODXwNkX9p7ourpg) to obtain the checkpoints for the two scenarios in the train.py file.
+提取码: is3a
 
 ## Requirements
 - python3.7
